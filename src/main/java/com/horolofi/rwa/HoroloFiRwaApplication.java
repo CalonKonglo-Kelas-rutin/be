@@ -4,11 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HoroloFiRwaApplication {
+public class HoroloFiRwaApplication  {
 
-	public static void main(String[] args) {
-		SpringApplication.run(HoroloFiRwaApplication.class, args);
-        System.out.println("HoroloFiRwaApplication started");
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(HoroloFiRwaApplication.class, args);
+    }
 }
