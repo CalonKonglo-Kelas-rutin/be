@@ -154,3 +154,11 @@ Proyek ini menggunakan `spring-boot-starter-security`. Secara default, endpoint 
 1.  Fork repositori ini
 2.  Buat branch fitur (`git checkout -b fitur-baru`)
 3.  Commit perubahan Anda (`git commit -m 'Men
+
+
+### RUN SPRING BOOT
+.\tools\maven\bin\mvnd.cmd -B clean install
+.\tools\maven\bin\mvnd.cmd -B clean package
+.\tools\maven\bin\mvnd.cmd spring-boot:run
+
+$env:JAVA_HOME = "$PWD\tools\jdk-25"
