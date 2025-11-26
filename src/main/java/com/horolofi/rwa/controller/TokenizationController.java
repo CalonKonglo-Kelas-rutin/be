@@ -1,6 +1,7 @@
 package com.horolofi.rwa.controller;
 
 import com.horolofi.rwa.dto.ApproveAssetRequestDto;
+import com.horolofi.rwa.dto.AssetDetailResponseDto;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
 import com.horolofi.rwa.entity.AssetStatus;
@@ -62,11 +63,17 @@ public class TokenizationController {
         return ResponseEntity.ok(assets);
     }
 
-        @PutMapping("/{assetId}/approve")
+        @PutMapping("admin/{assetId}/approve")
     public ResponseEntity<TokenizationResponseDto> approveAsset(
             @PathVariable Long assetId,
             @RequestBody ApproveAssetRequestDto request) {
         TokenizationResponseDto response = tokenizationService.approveAsset(assetId, request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("assets/{assetId}")
+    public ResponseEntity<AssetDetailResponseDto> getAssetDetail(@PathVariable Long assetId) {
+        AssetDetailResponseDto assetDetail = tokenizationService.getAssetDetail(assetId);
+        return ResponseEntity.ok(assetDetail);
     }
 }

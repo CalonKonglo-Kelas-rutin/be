@@ -3,6 +3,7 @@ package com.horolofi.rwa.service.impl;
 import com.horolofi.rwa.dto.ApproveAssetRequestDto;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
+import com.horolofi.rwa.dto.AssetDetailResponseDto;
 import com.horolofi.rwa.entity.Asset;
 import com.horolofi.rwa.entity.AssetStatus;
 import com.horolofi.rwa.exception.AssetNotFoundException;
@@ -74,5 +75,13 @@ public class TokenizationServiceImpl implements TokenizationService {
 
         Asset savedAsset = assetRepository.save(asset);
         return assetMapper.toDto(savedAsset);
+    }
+
+    @Override
+    public AssetDetailResponseDto getAssetDetail(Long assetId) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new AssetNotFoundException("Asset not found with id: " + assetId));
+        
+        return assetMapper.toDetailDto(asset);
     }
 }

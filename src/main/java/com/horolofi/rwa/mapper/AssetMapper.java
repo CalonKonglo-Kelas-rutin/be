@@ -1,5 +1,6 @@
 package com.horolofi.rwa.mapper;
 
+import com.horolofi.rwa.dto.AssetDetailResponseDto;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
 import com.horolofi.rwa.entity.Asset;
@@ -51,6 +52,20 @@ public class AssetMapper {
                 .txHashMint(entity.getTxHashMint())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
+                .build();
+    }
+
+    public AssetDetailResponseDto toDetailDto(Asset asset) {
+        if (asset == null) {
+            return null;
+        }
+        return AssetDetailResponseDto.builder()
+                .id(asset.getId())
+                .brand(asset.getBrand())
+                .model(asset.getModel())
+                .serialNumber(asset.getSerialNumber())
+                .conditionRating(asset.getConditionRating())
+                .status(asset.getStatus() != null ? asset.getStatus().name() : null)
                 .build();
     }
 
