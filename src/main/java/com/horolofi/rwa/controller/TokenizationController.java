@@ -1,5 +1,6 @@
 package com.horolofi.rwa.controller;
 
+import com.horolofi.rwa.dto.ApproveAssetRequestDto;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
 import com.horolofi.rwa.entity.AssetStatus;
@@ -59,5 +60,13 @@ public class TokenizationController {
         // Jika status null, service akan menangani default-nya (misal: PENDING)
         List<TokenizationResponseDto> assets = tokenizationService.getAssetsForAudit(assetStatus);
         return ResponseEntity.ok(assets);
+    }
+
+        @PutMapping("/{assetId}/approve")
+    public ResponseEntity<TokenizationResponseDto> approveAsset(
+            @PathVariable Long assetId,
+            @RequestBody ApproveAssetRequestDto request) {
+        TokenizationResponseDto response = tokenizationService.approveAsset(assetId, request);
+        return ResponseEntity.ok(response);
     }
 }

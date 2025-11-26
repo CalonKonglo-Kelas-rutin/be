@@ -2,9 +2,7 @@ package com.horolofi.rwa.entity;
 
 public enum AssetStatus {
     PENDING,
-    UNDER_REVIEW,
-    VERIFIED,
+    APPROVED, // Pastikan status ini ada
     REJECTED,
-    TOKENIZED,
-    MINTED
+    TOKENIZED
 }
