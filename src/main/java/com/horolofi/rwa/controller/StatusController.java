@@ -1,4 +1,4 @@
-package com.calonkonglo.kelasrutin.be.controller; // Sesuaikan dengan package Anda
+package com.horolofi.rwa.controller; // Sesuaikan dengan package Anda
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
