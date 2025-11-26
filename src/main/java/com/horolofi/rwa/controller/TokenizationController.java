@@ -2,6 +2,7 @@ package com.horolofi.rwa.controller;
 
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
+import com.horolofi.rwa.entity.AssetStatus;
 import com.horolofi.rwa.service.TokenizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +39,25 @@ public class TokenizationController {
     public ResponseEntity<List<TokenizationResponseDto>> getUserRequests(@RequestParam String userId) {
         List<TokenizationResponseDto> requests = tokenizationService.getUserTokenizationRequests(userId);
         return ResponseEntity.ok(requests);
+    }
+
+    @GetMapping("/admin/audit-list")
+    public ResponseEntity<List<TokenizationResponseDto>> getAssetsForAudit(
+            @RequestParam(required = false) String status) {
+        
+        AssetStatus assetStatus = null;
+        
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                // Konversi manual agar case-insensitive (misal: "approved" -> APPROVED)
+                assetStatus = AssetStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid status: " + status);
+            }
+        }
+        
+        // Jika status null, service akan menangani default-nya (misal: PENDING)
+        List<TokenizationResponseDto> assets = tokenizationService.getAssetsForAudit(assetStatus);
+        return ResponseEntity.ok(assets);
     }
 }

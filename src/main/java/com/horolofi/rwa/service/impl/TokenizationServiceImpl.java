@@ -3,6 +3,7 @@ package com.horolofi.rwa.service.impl;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
 import com.horolofi.rwa.entity.Asset;
+import com.horolofi.rwa.entity.AssetStatus; // Add this import
 import com.horolofi.rwa.mapper.AssetMapper;
 import com.horolofi.rwa.repository.AssetRepository;
 import com.horolofi.rwa.service.TokenizationService;
@@ -44,6 +45,17 @@ public class TokenizationServiceImpl implements TokenizationService {
     @Override
     public List<TokenizationResponseDto> getUserTokenizationRequests(String userId) {
         List<Asset> assets = assetRepository.findByOwnerId(userId);
+        return assets.stream()
+                .map(assetMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TokenizationResponseDto> getAssetsForAudit(AssetStatus status) {
+        // Default ke PENDING jika status tidak dikirim oleh user
+        AssetStatus targetStatus = (status != null) ? status : AssetStatus.PENDING;
+        
+        List<Asset> assets = assetRepository.findByStatus(targetStatus);
         return assets.stream()
                 .map(assetMapper::toDto)
                 .collect(Collectors.toList());
