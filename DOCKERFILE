@@ -5,7 +5,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Tahap 2: Run (Gunakan Image JDK 25 yang ringan)
-# Catatan: Jika versi alpine belum stabil untuk JDK 25, hapus "-alpine"
+# Catatan: Jika versi alpine belum stabil untuk JDK 25, hapus "-alpine" 
 FROM eclipse-temurin:25-jdk-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
