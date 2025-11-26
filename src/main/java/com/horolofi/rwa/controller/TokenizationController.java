@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/rwa")
@@ -31,5 +32,11 @@ public class TokenizationController {
         TokenizationResponseDto response = tokenizationService.requestTokenization(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/requests")
+    public ResponseEntity<List<TokenizationResponseDto>> getUserRequests(@RequestParam String userId) {
+        List<TokenizationResponseDto> requests = tokenizationService.getUserTokenizationRequests(userId);
+        return ResponseEntity.ok(requests);
     }
 }

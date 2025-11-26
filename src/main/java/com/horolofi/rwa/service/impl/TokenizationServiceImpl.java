@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j; // 1. Tambahkan import ini
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j // 2. Tambahkan anotasi ini agar variabel 'log' dikenali
@@ -36,5 +39,13 @@ public class TokenizationServiceImpl implements TokenizationService {
 
         // Map Entity to Response DTO
         return assetMapper.toDto(savedAsset);
+    }
+
+    @Override
+    public List<TokenizationResponseDto> getUserTokenizationRequests(String userId) {
+        List<Asset> assets = assetRepository.findByOwnerId(userId);
+        return assets.stream()
+                .map(assetMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
