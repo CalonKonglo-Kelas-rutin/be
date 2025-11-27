@@ -4,5 +4,5 @@ import com.horolofi.rwa.dto.PriceHistoryDto;
 import java.util.List;
 
 public interface PriceService {
-    List<PriceHistoryDto> getChartData(Long productId, String range);
+    List<PriceHistoryDto> getChartData(Long productId);
 }

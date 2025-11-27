@@ -19,7 +19,7 @@ public class PriceServiceImpl implements PriceService {
     private final PriceMapper priceMapper;
 
     @Override
-    public List<PriceHistoryDto> getChartData(Long productId, String range) {
+    public List<PriceHistoryDto> getChartData(Long productId) {
         // Abaikan parameter 'range', langsung ambil semua data
         List<PriceHistory> entities = repository.findByProductIdOrderByRecordedAtAsc(productId);
         
