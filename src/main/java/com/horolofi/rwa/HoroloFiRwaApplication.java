@@ -8,7 +8,6 @@ public class HoroloFiRwaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(HoroloFiRwaApplication.class, args);
-        System.out.println("HoroloFiRwaApplication started");
 	}
 
 }
