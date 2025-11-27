@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface PriceService {
     List<PriceHistoryDto> getChartData(Long productId);
+    PriceHistoryDto getLatestPrice(Long productId);
 }

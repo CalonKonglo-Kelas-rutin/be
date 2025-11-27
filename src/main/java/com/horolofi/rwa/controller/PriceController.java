@@ -23,4 +23,12 @@ public class PriceController {
         List<PriceHistoryDto> data = priceService.getChartData(productId);
         return ResponseEntity.ok(data);
     }
+
+    @GetMapping("/latest/{productId}")
+    public ResponseEntity<PriceHistoryDto> getLatestPrice(
+            @PathVariable Long productId
+    ) {
+        PriceHistoryDto latestPrice = priceService.getLatestPrice(productId);
+        return ResponseEntity.ok(latestPrice);
+    }
 }
