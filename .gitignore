@@ -33,3 +33,8 @@ build/
 .vscode/
 
 src/main/resources/application.properties
+### tools ###
+tools/
+
+### programdata ###
+programdata/
