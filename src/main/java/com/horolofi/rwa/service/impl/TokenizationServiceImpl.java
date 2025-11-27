@@ -10,10 +10,12 @@ import com.horolofi.rwa.exception.AssetNotFoundException;
 import com.horolofi.rwa.mapper.AssetMapper;
 import com.horolofi.rwa.repository.AssetRepository;
 import com.horolofi.rwa.service.TokenizationService;
+import com.horolofi.rwa.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,23 @@ public class TokenizationServiceImpl implements TokenizationService {
 
     private final AssetRepository assetRepository;
     private final AssetMapper assetMapper;
+    private final FileStorageService fileStorageService; // Tambahkan ini
 
     @Override
     @Transactional
     public TokenizationResponseDto requestTokenization(TokenizationRequestDto request) {
+        // Tambahkan ini untuk handle upload
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            String imageUrl = fileStorageService.saveFile(request.getImage());
+            if (request.getImageUrls() == null) {
+                request.setImageUrls(new ArrayList<>());
+            }
+            request.getImageUrls().add(imageUrl);
+        }
+
         // Map DTO to Entity
         Asset asset = assetMapper.toEntity(request);
+        asset.setStatus(AssetStatus.PENDING);
 
         // Save to database
         Asset savedAsset = assetRepository.save(asset);
