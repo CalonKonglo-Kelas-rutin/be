@@ -61,11 +61,24 @@ public class AssetMapper {
         }
         return AssetDetailResponseDto.builder()
                 .id(asset.getId())
+                .ownerId(asset.getOwnerId())
                 .brand(asset.getBrand())
                 .model(asset.getModel())
+                .refNumber(asset.getRefNumber())
                 .serialNumber(asset.getSerialNumber())
+                .productionYear(asset.getProductionYear())
                 .conditionRating(asset.getConditionRating())
-                .status(asset.getStatus() != null ? asset.getStatus().name() : null)
+                .hasBox(asset.getHasBox())
+                .hasPapers(asset.getHasPapers())
+                .imageUrls(asset.getImageUrls())
+                .documentsUrl(asset.getDocumentsUrl())
+                .status(asset.getStatus() != null ? asset.getStatus() : null)
+                .auditorNotes(asset.getAuditorNotes())
+                .appraisedValueUsd(asset.getAppraisedValueUsd())
+                .ipfsMetadataUri(asset.getIpfsMetadataUri())
+                .tokenId(asset.getTokenId())
+                .txHashMint(asset.getTxHashMint())
+                .createdAt(asset.getCreatedAt())
                 .build();
     }
 
