@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import java.util.UUID; // Tambahkan import ini
+import java.util.UUID;
 
 @Entity
 @Table(name = "assets", schema = "public")
@@ -20,8 +20,8 @@ import java.util.UUID; // Tambahkan import ini
 public class Asset {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;    
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;    
 
     @Column(name = "owner_id", nullable = false)
     private String ownerId;
