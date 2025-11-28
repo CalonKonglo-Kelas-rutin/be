@@ -4,7 +4,6 @@ import com.horolofi.rwa.entity.Asset;
 import com.horolofi.rwa.entity.AssetStatus; // Add this import
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository

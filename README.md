@@ -162,3 +162,4 @@ Proyek ini menggunakan `spring-boot-starter-security`. Secara default, endpoint 
 .\tools\maven\bin\mvnd.cmd spring-boot:run
 
 $env:JAVA_HOME = "$PWD\tools\jdk-25"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"

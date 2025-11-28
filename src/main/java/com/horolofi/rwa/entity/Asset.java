@@ -8,6 +8,7 @@ import lombok.Builder;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import java.util.UUID; // Tambahkan import ini
 
 @Entity
@@ -34,7 +35,7 @@ public class Asset {
     @Column(name = "ref_number")
     private String refNumber;
 
-    @Column(name = "serial_number", unique = true)
+    @Column(name = "serial_number")
     private String serialNumber;
 
     @Column(name = "production_year")

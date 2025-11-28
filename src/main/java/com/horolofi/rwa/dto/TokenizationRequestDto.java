@@ -7,8 +7,10 @@ import lombok.Builder;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
-import java.util.UUID; // Tambahkan import ini
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -24,20 +26,16 @@ public class TokenizationRequestDto {
 
     @NotBlank(message = "Model is required")
     private String model;
-
     private String refNumber;
-
     private String serialNumber;
-
     private Integer productionYear;
-
     private String conditionRating;
-
     private Boolean hasBox;
-
     private Boolean hasPapers;
 
     private List<String> imageUrls;
-
     private List<String> documentsUrl;
+    
+    // Tambahan untuk upload
+    private MultipartFile image;
 }
