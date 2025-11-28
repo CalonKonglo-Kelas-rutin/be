@@ -34,7 +34,7 @@ public class Asset {
     @Column(name = "ref_number")
     private String refNumber;
 
-    @Column(name = "serial_number")
+    @Column(name = "serial_number", unique = true)
     private String serialNumber;
 
     @Column(name = "production_year")
