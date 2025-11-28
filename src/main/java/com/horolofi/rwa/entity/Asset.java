@@ -8,8 +8,7 @@ import lombok.Builder;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import java.util.UUID;
+import java.util.UUID; // Tambahkan import ini
 
 @Entity
 @Table(name = "assets", schema = "public")
@@ -20,8 +19,8 @@ import java.util.UUID;
 public class Asset {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;    
 
     @Column(name = "owner_id", nullable = false)
     private String ownerId;
@@ -35,7 +34,7 @@ public class Asset {
     @Column(name = "ref_number")
     private String refNumber;
 
-    @Column(name = "serial_number")
+    @Column(name = "serial_number", unique = true)
     private String serialNumber;
 
     @Column(name = "production_year")
