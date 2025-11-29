@@ -32,6 +32,7 @@ public class AssetServiceImpl implements AssetService {
                     BigDecimal latestPrice = latestPriceOpt.map(PriceHistory::getPrice).orElse(BigDecimal.ZERO);
                     return new AssetListingDto(
                             asset.getId(),
+                            asset.getStatus().name(),
                             asset.getTokenId(),
                             asset.getBrand(),
                             asset.getModel(),

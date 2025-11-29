@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class AssetListingDto {
     private Integer id;
+    private String status;
     private String tokenId;
     private String brand;
     private String model;
