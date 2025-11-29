@@ -72,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
         orderBook.setPrice(totalPrice.doubleValue());
         orderBook.setFee(fee.doubleValue());
         orderBook.setTotalPrice(totalPrice.add(fee).doubleValue());
+        orderBook.setSignatureData(request.getSignatureData());
         orderBook.setStatus((request.getOrderType().equalsIgnoreCase("BUY")) ? OrderStatus.OPEN : OrderStatus.ASK);
         orderBook.setCreatedAt(LocalDateTime.now());
 

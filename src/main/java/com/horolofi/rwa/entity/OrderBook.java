@@ -46,6 +46,9 @@ public class OrderBook {
     @Column(name = "total_price")
     private Double totalPrice;
 
+    @Column(name = "signature_data", columnDefinition = "TEXT")
+    private String signatureData;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
