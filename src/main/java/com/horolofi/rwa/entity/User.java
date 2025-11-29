@@ -8,24 +8,20 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "public")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private String walletAddress;
     
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String username;
     
     @Column(nullable = false, unique = true)
     private String email;
-    
-    @Column(name = "wallet_address")
-    private String walletAddress;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
