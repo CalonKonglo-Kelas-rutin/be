@@ -36,4 +36,5 @@ public class TokenizationResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime approveAt;
     private LocalDateTime rejectedAt;
+    private LocalDateTime tokenizedAt;
 }
