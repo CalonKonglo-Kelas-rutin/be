@@ -188,13 +188,15 @@ public class OrderServiceImpl implements OrderService {
         // Tentukan tipe order yang dicari (Lawan jenis)
         OrderType requestType = OrderType.valueOf(request.getOrderType());
         OrderType lookingForType = requestType == OrderType.BUY ? OrderType.SELL : OrderType.BUY;
+        OrderStatus lookingForStatus = requestType == OrderType.BUY ? OrderStatus.ASK : OrderStatus.OPEN;
         Long requestAssetId = request.getAssetId();
 
         log.info("System is searching for Order Type: {}", lookingForType);
 
         // Cari order di database yang cocok
         Optional<OrderBook> match = orderBookRepository.findAll().stream()
-            .filter(o -> o.getStatus() == OrderStatus.OPEN)
+            .filter(o -> o.getStatus() == lookingForStatus
+        )
             .filter(o -> o.getOrderType() == lookingForType)
             .filter(o -> {
                 if (o.getAsset() == null) return false;
