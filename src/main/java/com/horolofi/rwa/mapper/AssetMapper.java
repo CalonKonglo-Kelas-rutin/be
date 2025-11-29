@@ -53,6 +53,7 @@ public class AssetMapper {
                 .createdAt(entity.getCreatedAt())
                 .approveAt(entity.getApprovedAt())
                 .rejectedAt(entity.getRejectedAt())
+                .tokenizedAt(entity.getTokenizedAt())
                 .build();
     }
 
@@ -82,6 +83,7 @@ public class AssetMapper {
                 .createdAt(asset.getCreatedAt())
                 .approveAt(asset.getApprovedAt())
                 .rejectedAt(asset.getRejectedAt())
+                .tokenizedAt(asset.getTokenizedAt())
                 .build();
     }
 

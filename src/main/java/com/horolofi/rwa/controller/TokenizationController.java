@@ -5,6 +5,7 @@ import com.horolofi.rwa.dto.AssetDetailResponseDto;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
 import com.horolofi.rwa.dto.RejectAssetRequestDto;
+import com.horolofi.rwa.dto.UpdateTokenAddressRequestDto;
 import com.horolofi.rwa.entity.AssetStatus;
 import com.horolofi.rwa.service.TokenizationService;
 import lombok.RequiredArgsConstructor;
@@ -80,5 +81,13 @@ public class TokenizationController {
     public ResponseEntity<AssetDetailResponseDto> getAssetDetail(@PathVariable Long assetId) {
         AssetDetailResponseDto assetDetail = tokenizationService.getAssetDetail(assetId);
         return ResponseEntity.ok(assetDetail);
+    }
+
+    // Endpoint baru untuk update token address manual
+    @PutMapping("assets/{assetId}/tokenize")
+    public ResponseEntity<TokenizationResponseDto> tokenizeAsset(
+            @PathVariable Long assetId) {
+        TokenizationResponseDto response = tokenizationService.tokenizeAsset(assetId);
+        return ResponseEntity.ok(response);
     }
 }

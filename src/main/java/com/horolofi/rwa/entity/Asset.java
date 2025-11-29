@@ -83,6 +83,9 @@ public class Asset {
     @Column(name = "rejected_at")
     private LocalDateTime rejectedAt;
 
+    @Column(name = "tokenized_at")
+    private LocalDateTime tokenizedAt;
+    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

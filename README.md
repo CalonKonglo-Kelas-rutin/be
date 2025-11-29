@@ -161,5 +161,7 @@ Proyek ini menggunakan `spring-boot-starter-security`. Secara default, endpoint 
 .\tools\maven\bin\mvnd.cmd -B clean package
 .\tools\maven\bin\mvnd.cmd spring-boot:run
 
+netstat -ano | findstr :8080
+
 $env:JAVA_HOME = "$PWD\tools\jdk-25"
 $env:Path = "$env:JAVA_HOME\bin;$env:Path"
