@@ -55,6 +55,18 @@ public class MarketController {
         OrderBookListResponse response = orderService.getOrderBook(assetId, side, status, page, limit);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/orders/user")
+    public ResponseEntity<OrderBookListResponse> getUserOrders(
+            @RequestParam String walletAddress,
+            @RequestParam String assetId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        log.info("Fetching orders for wallet: {}, asset: {}", walletAddress, assetId);
+        OrderBookListResponse response = orderService.getOrdersByUserAndAsset(walletAddress, assetId, null, page, limit);
+        return ResponseEntity.ok(response);
+    }
     
     @PostMapping("/order/cancel")
     public ResponseEntity<CreateOrderResponse> cancelOrder(@Valid @RequestBody CancelOrderRequest request) {

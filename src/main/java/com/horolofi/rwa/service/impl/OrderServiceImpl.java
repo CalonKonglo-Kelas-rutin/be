@@ -246,4 +246,41 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         }
     }
+
+    @Override
+    public OrderBookListResponse getOrdersByUserAndAsset(String walletAddress, String assetId, OrderStatus status, int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
+        Page<OrderBook> orderPage;
+        
+        // Konversi assetId String ke Long agar sesuai dengan tipe ID di database
+        Long assetIdLong = Long.parseLong(assetId);
+
+        if (status != null) {
+            orderPage = orderBookRepository.findByUserWalletAddressAndAssetIdAndStatus(walletAddress, assetIdLong, status, pageable);
+        } else {
+            orderPage = orderBookRepository.findByUserWalletAddressAndAssetId(walletAddress, assetIdLong, pageable);
+        }
+
+        // Mapping Entity ke DTO
+        List<OrderBookItemDto> items = orderPage.getContent().stream()
+                .map(order -> OrderBookItemDto.builder()
+                        .orderId(order.getId())
+                        .userAddress(order.getMaker_address().getWalletAddress())
+                        .quantity(order.getQuantity())    
+                        .price(BigDecimal.valueOf(order.getPrice()))            
+                        .orderType(order.getOrderType())    
+                        .status(order.getStatus())          
+                        .createdAt(order.getCreatedAt())    
+                        .build())   
+                .toList();
+
+        return OrderBookListResponse.builder()
+                .status("success")
+                .meta(OrderBookListResponse.Meta.builder()
+                        .totalQueue(orderPage.getTotalElements())
+                        .assetId(assetId)
+                        .build())
+                .data(items)
+                .build();
+    }
 }
