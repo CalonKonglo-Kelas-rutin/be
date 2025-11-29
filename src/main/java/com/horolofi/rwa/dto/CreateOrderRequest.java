@@ -25,8 +25,15 @@ public class CreateOrderRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "Quantity must be greater than 0")
     private BigDecimal quantity;
 
+    @NotNull(message = "Wallet address is required")
+    private String walletAddress; // User's wallet address
+
     @NotNull(message = "Signature data is required")
     private String signatureData;
-    
-    private String walletAddress; // User's wallet address
+
+    @NotNull(message = "Expiry data is required")
+    private String expiryData;
+
+    @NotNull(message = "Nonce is required")
+    private String nonce;
 }

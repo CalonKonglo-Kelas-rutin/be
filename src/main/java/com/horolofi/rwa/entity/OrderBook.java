@@ -34,6 +34,15 @@ public class OrderBook {
     @JoinColumn(name = "maker_address", nullable = false)
     private User maker_address; // User yang membuat order (Maker)
 
+    @Column(name = "maker_signature_data", columnDefinition = "TEXT")
+    private String maker_signature_data; // Data tanda tangan digital untuk verifikasi keamanan
+
+    @Column(name = "maker_expiry", columnDefinition = "TEXT")
+    private String maker_expiry; // Data tanda tangan digital untuk verifikasi keamanan
+
+    @Column(name = "nonce", columnDefinition = "TEXT")
+    private String nonce; // Nilai unik untuk mencegah replay attack
+    
     @ManyToOne
     @JoinColumn(name = "taker_address", nullable = true)
     private User taker_address; // User yang mengambil/mengeksekusi order (Taker)
@@ -49,10 +58,7 @@ public class OrderBook {
 
     @Column(name = "quantity")
     private Integer quantity; // Jumlah unit aset yang dipesan
-
-    @Column(name = "signature_data", columnDefinition = "TEXT")
-    private String signatureData; // Data tanda tangan digital untuk verifikasi keamanan
-    
+  
     @Column(name = "tx_hash", columnDefinition = "TEXT" )
     private String txHash; // Hash transaksi blockchain terkait order ini
 

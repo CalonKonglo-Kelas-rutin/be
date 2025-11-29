@@ -5,6 +5,7 @@ import com.horolofi.rwa.dto.CreateOrderRequest;
 import com.horolofi.rwa.dto.CreateOrderResponse;
 import com.horolofi.rwa.dto.OrderBookListResponse;
 import com.horolofi.rwa.dto.CancelOrderRequest; // Import DTO
+import com.horolofi.rwa.dto.MatchOrderResponse;
 import com.horolofi.rwa.entity.OrderStatus;
 import com.horolofi.rwa.entity.OrderType;
 import com.horolofi.rwa.service.AssetService;
@@ -59,6 +60,12 @@ public class MarketController {
     public ResponseEntity<CreateOrderResponse> cancelOrder(@Valid @RequestBody CancelOrderRequest request) {
         log.info("Received cancel order request: {}", request);
         CreateOrderResponse response = orderService.cancelOrder(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/orders/match")
+    public ResponseEntity<MatchOrderResponse> matchOrder(@RequestBody CreateOrderRequest request) {
+        MatchOrderResponse response = orderService.matchOrder(request);
         return ResponseEntity.ok(response);
     }
 }

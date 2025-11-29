@@ -9,6 +9,7 @@ import com.horolofi.rwa.dto.CreateOrderResponse;
 import com.horolofi.rwa.dto.OrderBookItemDto;
 import com.horolofi.rwa.dto.OrderBookListResponse;
 import com.horolofi.rwa.dto.CancelOrderRequest; // Import DTO
+import com.horolofi.rwa.dto.MatchOrderResponse;
 import com.horolofi.rwa.entity.Asset;
 import com.horolofi.rwa.entity.PriceHistory;
 import com.horolofi.rwa.entity.OrderBook;
@@ -30,9 +31,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j; // Tambahkan import ini
 
 @Service
 @RequiredArgsConstructor
+@Slf4j // Tambahkan anotasi ini untuk mengaktifkan 'log'
 public class OrderServiceImpl implements OrderService {
 
     private final OrderBookRepository orderBookRepository;
@@ -65,21 +69,25 @@ public class OrderServiceImpl implements OrderService {
 
         // Build OrderBook
         OrderBook orderBook = new OrderBook();
-        orderBook.setMaker_address(maker); // UBAH INI: Ptass object User, bukan String
-        orderBook.setAsset(asset); // Set relasi Asset
-        orderBook.setOrderType(OrderType.valueOf(request.getOrderType()));// Convert String to OrderType enum
+        orderBook.setMaker_address(maker); 
+        orderBook.setAsset(asset); 
+        orderBook.setOrderType(OrderType.valueOf(request.getOrderType()));
         orderBook.setQuantity(quantityBD.intValue());
         orderBook.setPrice(totalPrice.doubleValue());
         orderBook.setFee(fee.doubleValue());
         orderBook.setTotalPrice(totalPrice.add(fee).doubleValue());
-        orderBook.setSignatureData(request.getSignatureData());
+        
+        // --- UPDATE: Mapping sesuai kolom database ---
+        orderBook.setMaker_signature_data(request.getSignatureData());
+        orderBook.setMaker_expiry(request.getExpiryData());
+        orderBook.setNonce(request.getNonce()); 
+        // --------------------------------------------
+
         orderBook.setStatus((request.getOrderType().equalsIgnoreCase("BUY")) ? OrderStatus.OPEN : OrderStatus.ASK);
         orderBook.setCreatedAt(LocalDateTime.now());
 
-        // Simpan
         OrderBook savedOrder = orderBookRepository.save(orderBook);
 
-        // Return response
         return CreateOrderResponse.builder()
                 .orderId(savedOrder.getId())
                 .walletAddress(maker.getWalletAddress())
@@ -169,5 +177,71 @@ public class OrderServiceImpl implements OrderService {
                 .createdAt(savedOrder.getCreatedAt())
                 .message("Order cancelled successfully")
                 .build();
+    }
+
+    @Override
+    public MatchOrderResponse matchOrder(CreateOrderRequest request) {
+        log.info("--- START MATCHING PROCESS ---");
+        log.info("Incoming Request from: {}", request.getWalletAddress());
+        log.info("Looking to: {} Asset ID: {}", request.getOrderType(), request.getAssetId());
+
+        // Tentukan tipe order yang dicari (Lawan jenis)
+        OrderType requestType = OrderType.valueOf(request.getOrderType());
+        OrderType lookingForType = requestType == OrderType.BUY ? OrderType.SELL : OrderType.BUY;
+        Long requestAssetId = request.getAssetId();
+
+        log.info("System is searching for Order Type: {}", lookingForType);
+
+        // Cari order di database yang cocok
+        Optional<OrderBook> match = orderBookRepository.findAll().stream()
+            .filter(o -> o.getStatus() == OrderStatus.OPEN)
+            .filter(o -> o.getOrderType() == lookingForType)
+            .filter(o -> {
+                if (o.getAsset() == null) return false;
+                return o.getAsset().getId().longValue() == requestAssetId.longValue();
+            })
+            .findFirst();
+
+        if (match.isPresent()) {
+            OrderBook makerOrder = match.get();
+            
+            makerOrder.setStatus(OrderStatus.MATCHED);
+
+            List<User> takerUsers = userRepository.findByWalletAddress(request.getWalletAddress());
+            if (!takerUsers.isEmpty()) {
+                makerOrder.setTaker_address(takerUsers.get(0));
+            }
+            
+            makerOrder.setUpdatedAt(LocalDateTime.now()); 
+            orderBookRepository.save(makerOrder);
+
+            return MatchOrderResponse.builder()
+                .status("MATCH_FOUND")
+                .match_data(MatchOrderResponse.MatchData.builder()
+                    .order_id(makerOrder.getId())
+                    .maker_address(makerOrder.getMaker_address().getWalletAddress())
+                    .quantity(String.valueOf(makerOrder.getQuantity()))
+                    .price(makerOrder.getPrice().toString())
+                    .fee(makerOrder.getFee() != null ? makerOrder.getFee().toString() : "0")
+                    .totalPrice(makerOrder.getTotalPrice() != null ? makerOrder.getTotalPrice().toString() : "0")
+                    
+                    // --- UPDATE: Return field sesuai kolom database ---
+                    .maker_signature_data(makerOrder.getMaker_signature_data())
+                    .maker_expiry(makerOrder.getMaker_expiry())
+                    .maker_nonce(makerOrder.getNonce())
+                    .build())
+                .build();
+        } else {
+             // Tambahkan log detail kenapa gagal
+             log.warn("NO MATCH FOUND. Debug Info:");
+             log.warn("Looking for Type: {}", lookingForType);
+             log.warn("Looking for Asset ID: {}", requestAssetId); // Sekarang variabel ini sudah dikenali
+             log.warn("Total Orders in DB: {}", orderBookRepository.count());
+             
+             return MatchOrderResponse.builder()
+                .status("NO_MATCH_FOUND")
+                .match_data(null)
+                .build();
+        }
     }
 }
