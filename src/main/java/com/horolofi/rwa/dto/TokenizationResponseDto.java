@@ -34,5 +34,6 @@ public class TokenizationResponseDto {
     private String tokenId;
     private String txHashMint;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime approveAt;
+    private LocalDateTime rejectedAt;
 }
