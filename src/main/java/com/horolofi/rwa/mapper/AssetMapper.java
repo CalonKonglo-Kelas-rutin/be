@@ -79,6 +79,7 @@ public class AssetMapper {
                 .tokenId(asset.getTokenId())
                 .txHashMint(asset.getTxHashMint())
                 .createdAt(asset.getCreatedAt())
+                .updatedAt(asset.getUpdatedAt())
                 .build();
     }
 
