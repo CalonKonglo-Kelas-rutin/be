@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.horolofi.rwa.entity.OrderStatus;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "order_book")
+@Table(name = "order_book", schema = "public")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class OrderBook {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
     
     @ManyToOne
     @JoinColumn(name = "buyer_id", nullable = false)
@@ -28,6 +29,8 @@ public class OrderBook {
     
     @Column(nullable = false)
     private String status;
+
+    private OrderType orderType;
     
     @Column(name = "quantity")
     private Integer quantity;
@@ -35,6 +38,12 @@ public class OrderBook {
     @Column(name = "price")
     private Double price;
     
+    @Column(name = "fee")
+    private Double fee;
+
+    @Column(name = "total_price")
+    private Double totalPrice;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     

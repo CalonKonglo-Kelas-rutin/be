@@ -1,6 +1,7 @@
 package com.horolofi.rwa.repository;
 
 import com.horolofi.rwa.entity.OrderBook;
+import com.horolofi.rwa.entity.OrderType;
 import com.horolofi.rwa.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
