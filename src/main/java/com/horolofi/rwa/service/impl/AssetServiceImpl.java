@@ -25,7 +25,7 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     public List<AssetListingDto> getTokenizedAssets() {
-        List<Asset> tokenizedAssets = assetRepository.findByStatus(AssetStatus.TOKENIZED);
+        List<Asset> tokenizedAssets = assetRepository.findByStatus(AssetStatus.APPROVED);
         return tokenizedAssets.stream()
                 .map(asset -> {
                     Optional<PriceHistory> latestPriceOpt = priceRepository.findTopByProductIdOrderByRecordedAtDesc(asset.getId().longValue());

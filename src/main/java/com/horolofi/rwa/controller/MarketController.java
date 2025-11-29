@@ -3,6 +3,9 @@ package com.horolofi.rwa.controller;
 import com.horolofi.rwa.dto.AssetListingDto;
 import com.horolofi.rwa.dto.CreateOrderRequest;
 import com.horolofi.rwa.dto.CreateOrderResponse;
+import com.horolofi.rwa.dto.OrderBookListResponse;
+import com.horolofi.rwa.entity.OrderStatus;
+import com.horolofi.rwa.entity.OrderType;
 import com.horolofi.rwa.service.AssetService;
 import com.horolofi.rwa.service.OrderService;
 import jakarta.validation.Valid;
@@ -36,5 +39,18 @@ public class MarketController {
         log.info("Fetching tokenized assets for listings");
         List<AssetListingDto> listings = assetService.getTokenizedAssets();
         return ResponseEntity.ok(listings);
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<OrderBookListResponse> getOrderBook(
+            @RequestParam String assetId,
+            @RequestParam OrderType side,
+            @RequestParam(required = false, defaultValue = "OPEN") OrderStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        log.info("Fetching order book for asset: {}, side: {}, status: {}", assetId, side, status);
+        OrderBookListResponse response = orderService.getOrderBook(assetId, side, status, page, limit);
+        return ResponseEntity.ok(response);
     }
 }

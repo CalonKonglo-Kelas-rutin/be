@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.horolofi.rwa.entity.OrderStatus;
-
+import com.horolofi.rwa.entity.OrderType;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,9 +27,11 @@ public class OrderBook {
     @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
     
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
-
+    private OrderStatus status;
+    
+    @Column(name = "order_type", nullable = false)
     private OrderType orderType;
     
     @Column(name = "quantity")

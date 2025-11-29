@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.horolofi.rwa.dto.CreateOrderRequest;
 import com.horolofi.rwa.dto.CreateOrderResponse;
+import com.horolofi.rwa.dto.OrderBookItemDto;
+import com.horolofi.rwa.dto.OrderBookListResponse;
 import com.horolofi.rwa.entity.Asset;
 import com.horolofi.rwa.entity.PriceHistory;
 import com.horolofi.rwa.entity.OrderBook;
@@ -21,6 +23,12 @@ import com.horolofi.rwa.repository.UserRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.math.RoundingMode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,12 +66,12 @@ public class OrderServiceImpl implements OrderService {
         OrderBook orderBook = new OrderBook();
         orderBook.setBuyer(buyer); // Set relasi User
         orderBook.setAsset(asset); // Set relasi Asset
-        orderBook.setOrderType(OrderType.valueOf(request.getOrderType())); // Convert String to OrderType enum
+        orderBook.setOrderType(OrderType.valueOf(request.getOrderType()));// Convert String to OrderType enum
         orderBook.setQuantity(quantityBD.intValue());
         orderBook.setPrice(totalPrice.doubleValue());
         orderBook.setFee(fee.doubleValue());
         orderBook.setTotalPrice(totalPrice.add(fee).doubleValue());
-        orderBook.setStatus(OrderStatus.PENDING.name());
+        orderBook.setStatus((request.getOrderType().equalsIgnoreCase("BUY")) ? OrderStatus.OPEN : OrderStatus.ASK);
         orderBook.setCreatedAt(LocalDateTime.now());
 
         // Simpan
@@ -80,9 +88,44 @@ public class OrderServiceImpl implements OrderService {
                 .price(BigDecimal.valueOf(savedOrder.getPrice()))
                 .fee(savedOrder.getFee())
                 .totalPrice(savedOrder.getTotalPrice())
-                .status(OrderStatus.valueOf(savedOrder.getStatus()).toString())
+                .status(savedOrder.getStatus().toString())
                 .createdAt(savedOrder.getCreatedAt())
                 .message("Order created successfully")
+                .build();
+    }
+
+    @Override
+    public OrderBookListResponse getOrderBook(String assetId, OrderType side, OrderStatus status, int page, int limit) {
+        // Default status to OPEN if not provided
+        OrderStatus queryStatus = (status != null) ? status : OrderStatus.OPEN;
+        
+        // Sort by createdAt ASC (FIFO)
+        Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").ascending());
+        
+        Page<OrderBook> orderPage = orderBookRepository.findByAssetIdAndOrderTypeAndStatus(assetId, side, queryStatus, pageable);
+        long totalQueue = orderBookRepository.countByAssetIdAndOrderTypeAndStatus(assetId, side, queryStatus);
+        
+        List<OrderBookItemDto> items = new ArrayList<>();
+        long startPosition = (long) page * limit + 1;
+        
+        for (int i = 0; i < orderPage.getContent().size(); i++) {
+            OrderBook order = orderPage.getContent().get(i);
+            items.add(OrderBookItemDto.builder()
+                    .orderId(order.getId())
+                    .userAddress(order.getBuyer().getWalletAddress()) 
+                    .quantity(order.getQuantity())
+                    .createdAt(order.getCreatedAt())
+                    .queuePosition(startPosition + i)
+                    .build());
+        }
+        
+        return OrderBookListResponse.builder()
+                .status("success")
+                .meta(OrderBookListResponse.Meta.builder()
+                        .totalQueue(totalQueue)
+                        .assetId(assetId)
+                        .build())
+                .data(items)
                 .build();
     }
 }
