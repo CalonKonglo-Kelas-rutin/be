@@ -12,5 +12,9 @@ public interface OrderService {
     CreateOrderResponse createOrder(CreateOrderRequest request);
     MatchOrderResponse matchOrder(CreateOrderRequest request); // Method added
     OrderBookListResponse getOrderBook(String assetId, OrderType side, OrderStatus status, int page, int limit);
+    
+    // Update signature method ini:
+    OrderBookListResponse getOrdersByUserAndAsset(String walletAddress, String assetId, OrderStatus status, int page, int limit);
+
     CreateOrderResponse cancelOrder(CancelOrderRequest request);
 }
