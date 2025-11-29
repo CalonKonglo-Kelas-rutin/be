@@ -4,6 +4,7 @@ import com.horolofi.rwa.dto.AssetListingDto;
 import com.horolofi.rwa.dto.CreateOrderRequest;
 import com.horolofi.rwa.dto.CreateOrderResponse;
 import com.horolofi.rwa.dto.OrderBookListResponse;
+import com.horolofi.rwa.dto.CancelOrderRequest; // Import DTO
 import com.horolofi.rwa.entity.OrderStatus;
 import com.horolofi.rwa.entity.OrderType;
 import com.horolofi.rwa.service.AssetService;
@@ -51,6 +52,13 @@ public class MarketController {
     ) {
         log.info("Fetching order book for asset: {}, side: {}, status: {}", assetId, side, status);
         OrderBookListResponse response = orderService.getOrderBook(assetId, side, status, page, limit);
+        return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/order/cancel")
+    public ResponseEntity<CreateOrderResponse> cancelOrder(@Valid @RequestBody CancelOrderRequest request) {
+        log.info("Received cancel order request: {}", request);
+        CreateOrderResponse response = orderService.cancelOrder(request);
         return ResponseEntity.ok(response);
     }
 }

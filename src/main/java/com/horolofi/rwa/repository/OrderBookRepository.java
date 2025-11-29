@@ -14,18 +14,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderBookRepository extends JpaRepository<OrderBook, String> {
+public interface OrderBookRepository extends JpaRepository<OrderBook, Long> { // Changed String to Long
     
     @Query("SELECT DISTINCT ob.buyer FROM OrderBook ob " +
            "JOIN ob.asset a " +
            "WHERE a.serialNumber = :serialNumber")
     List<User> findUsersByAssetSerialNumber(@Param("serialNumber") String serialNumber);
     
-    // FIX: Hapus @Query manual. Biarkan Spring Data JPA menangani query secara otomatis.
-    // Spring akan otomatis memetakan:
-    // AssetId -> field asset.id
-    // OrderType -> field orderType
-    // Status -> field status
     Page<OrderBook> findByAssetIdAndOrderTypeAndStatus(
             String assetId, 
             OrderType orderType, 
@@ -33,7 +28,6 @@ public interface OrderBookRepository extends JpaRepository<OrderBook, String> {
             Pageable pageable
     );
     
-    // FIX: Hapus @Query manual juga untuk count
     long countByAssetIdAndOrderTypeAndStatus(
             String assetId, 
             OrderType orderType, 

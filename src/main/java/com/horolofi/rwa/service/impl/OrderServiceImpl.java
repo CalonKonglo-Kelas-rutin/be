@@ -8,6 +8,7 @@ import com.horolofi.rwa.dto.CreateOrderRequest;
 import com.horolofi.rwa.dto.CreateOrderResponse;
 import com.horolofi.rwa.dto.OrderBookItemDto;
 import com.horolofi.rwa.dto.OrderBookListResponse;
+import com.horolofi.rwa.dto.CancelOrderRequest; // Import DTO
 import com.horolofi.rwa.entity.Asset;
 import com.horolofi.rwa.entity.PriceHistory;
 import com.horolofi.rwa.entity.OrderBook;
@@ -126,6 +127,46 @@ public class OrderServiceImpl implements OrderService {
                         .assetId(assetId)
                         .build())
                 .data(items)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public CreateOrderResponse cancelOrder(CancelOrderRequest request) {
+        // 1. Cari Order berdasarkan ID
+        OrderBook order = orderBookRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + request.getOrderId()));
+
+        // 2. Validasi Pemilik (Wallet Address harus sama)
+        if (!order.getBuyer().getWalletAddress().equalsIgnoreCase(request.getWalletAddress())) {
+            throw new RuntimeException("Unauthorized: Wallet address does not match order owner");
+        }
+
+        // 3. Validasi Status (Hanya bisa cancel jika status OPEN atau ASK)
+        if (order.getStatus() == OrderStatus.MATCHED || order.getStatus() == OrderStatus.CANCELLED) {
+            throw new RuntimeException("Cannot cancel order with status: " + order.getStatus());
+        }
+
+        // 4. Update Status
+        order.setStatus(OrderStatus.CANCELLED);
+        order.setUpdatedAt(LocalDateTime.now());
+        
+        OrderBook savedOrder = orderBookRepository.save(order);
+
+        // 5. Return response (Reuse CreateOrderResponse)
+        return CreateOrderResponse.builder()
+                .orderId(savedOrder.getId())
+                .walletAddress(savedOrder.getBuyer().getWalletAddress())
+                .orderType(savedOrder.getOrderType().toString())
+                .assetId(savedOrder.getAsset().getId())
+                .assetName(savedOrder.getAsset().getBrand())
+                .quantity(savedOrder.getQuantity())
+                .price(BigDecimal.valueOf(savedOrder.getPrice()))
+                .fee(savedOrder.getFee())
+                .totalPrice(savedOrder.getTotalPrice())
+                .status(savedOrder.getStatus().toString())
+                .createdAt(savedOrder.getCreatedAt())
+                .message("Order cancelled successfully")
                 .build();
     }
 }
