@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,6 +89,7 @@ public class TokenizationServiceImpl implements TokenizationService {
         
         // Set status to APPROVED
         asset.setStatus(AssetStatus.APPROVED);
+        asset.setApprovedAt(LocalDateTime.now());
 
         Asset savedAsset = assetRepository.save(asset);
         return assetMapper.toDto(savedAsset);
@@ -114,6 +116,7 @@ public class TokenizationServiceImpl implements TokenizationService {
         
         asset.setAuditorNotes(request.getRejectionReason());   
         asset.setStatus(AssetStatus.REJECTED);
+        asset.setRejectedAt(LocalDateTime.now());
         
         // Jika di Entity Asset ada field untuk menyimpan alasan reject, set di sini
         // asset.setRejectionReason(request.getRejectionReason());

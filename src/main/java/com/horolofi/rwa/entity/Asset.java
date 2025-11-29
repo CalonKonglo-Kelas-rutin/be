@@ -34,7 +34,7 @@ public class Asset {
     @Column(name = "ref_number")
     private String refNumber;
 
-    @Column(name = "serial_number", unique = true)
+    @Column(name = "serial_number", unique = false)
     private String serialNumber;
 
     @Column(name = "production_year")
@@ -77,17 +77,14 @@ public class Asset {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    @Column(name = "rejected_at")
+    private LocalDateTime rejectedAt;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }

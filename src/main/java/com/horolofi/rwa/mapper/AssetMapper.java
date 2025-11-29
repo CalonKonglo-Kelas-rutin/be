@@ -51,7 +51,8 @@ public class AssetMapper {
                 .tokenId(entity.getTokenId())
                 .txHashMint(entity.getTxHashMint())
                 .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
+                .approveAt(entity.getApprovedAt())
+                .rejectedAt(entity.getRejectedAt())
                 .build();
     }
 
@@ -79,7 +80,8 @@ public class AssetMapper {
                 .tokenId(asset.getTokenId())
                 .txHashMint(asset.getTxHashMint())
                 .createdAt(asset.getCreatedAt())
-                .updatedAt(asset.getUpdatedAt())
+                .approveAt(asset.getApprovedAt())
+                .rejectedAt(asset.getRejectedAt())
                 .build();
     }
 
