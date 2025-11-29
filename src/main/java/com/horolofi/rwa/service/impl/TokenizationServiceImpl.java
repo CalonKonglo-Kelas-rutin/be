@@ -111,7 +111,8 @@ public class TokenizationServiceImpl implements TokenizationService {
         if (asset.getStatus() != AssetStatus.PENDING) {
              throw new IllegalStateException("Only PENDING assets can be rejected");
         }
-
+        
+        asset.setAuditorNotes(request.getRejectionReason());   
         asset.setStatus(AssetStatus.REJECTED);
         
         // Jika di Entity Asset ada field untuk menyimpan alasan reject, set di sini
