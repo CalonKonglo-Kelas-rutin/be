@@ -5,6 +5,7 @@ import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
 import com.horolofi.rwa.dto.AssetDetailResponseDto;
 import com.horolofi.rwa.dto.RejectAssetRequestDto;
+import com.horolofi.rwa.dto.UpdateTokenAddressRequestDto;
 import com.horolofi.rwa.entity.Asset;
 import com.horolofi.rwa.entity.AssetStatus;
 import com.horolofi.rwa.exception.AssetNotFoundException;
@@ -128,6 +129,21 @@ public class TokenizationServiceImpl implements TokenizationService {
         // Kirim email notifikasi reject jika diperlukan (opsional)
         // emailService.sendRejectionEmail(savedAsset.getUser().getEmail(), request.getRejectionReason());
 
+        return assetMapper.toDto(savedAsset);
+    }
+
+    @Override
+    @Transactional
+    public TokenizationResponseDto tokenizeAsset(Long assetId) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new AssetNotFoundException("Asset not found with id: " + assetId));
+        
+        // Optional: Jika status masih APPROVED, otomatis ubah ke TOKENIZED karena address sudah ada
+        if (asset.getStatus() == AssetStatus.APPROVED) {
+            asset.setStatus(AssetStatus.TOKENIZED);
+        }
+        asset.setTokenizedAt(LocalDateTime.now());
+        Asset savedAsset = assetRepository.save(asset);
         return assetMapper.toDto(savedAsset);
     }
 }
