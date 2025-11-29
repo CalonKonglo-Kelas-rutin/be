@@ -4,6 +4,7 @@ import com.horolofi.rwa.dto.ApproveAssetRequestDto;
 import com.horolofi.rwa.dto.AssetDetailResponseDto;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
+import com.horolofi.rwa.dto.RejectAssetRequestDto;
 import com.horolofi.rwa.entity.AssetStatus;
 import com.horolofi.rwa.service.TokenizationService;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,14 @@ public class TokenizationController {
             @PathVariable Long assetId,
             @RequestBody ApproveAssetRequestDto request) {
         TokenizationResponseDto response = tokenizationService.approveAsset(assetId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("admin/{assetId}/reject")
+    public ResponseEntity<TokenizationResponseDto> rejectAsset(
+            @PathVariable Long assetId,
+            @RequestBody @Valid RejectAssetRequestDto request) {
+        TokenizationResponseDto response = tokenizationService.rejectAsset(assetId, request);
         return ResponseEntity.ok(response);
     }
 

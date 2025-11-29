@@ -4,6 +4,7 @@ import com.horolofi.rwa.dto.ApproveAssetRequestDto;
 import com.horolofi.rwa.dto.TokenizationRequestDto;
 import com.horolofi.rwa.dto.TokenizationResponseDto;
 import com.horolofi.rwa.dto.AssetDetailResponseDto;
+import com.horolofi.rwa.dto.RejectAssetRequestDto;
 import com.horolofi.rwa.entity.Asset;
 import com.horolofi.rwa.entity.AssetStatus;
 import com.horolofi.rwa.exception.AssetNotFoundException;
@@ -12,6 +13,7 @@ import com.horolofi.rwa.repository.AssetRepository;
 import com.horolofi.rwa.service.TokenizationService;
 import com.horolofi.rwa.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenizationServiceImpl implements TokenizationService {
 
     private final AssetRepository assetRepository;
@@ -96,5 +99,32 @@ public class TokenizationServiceImpl implements TokenizationService {
                 .orElseThrow(() -> new AssetNotFoundException("Asset not found with id: " + assetId));
         
         return assetMapper.toDetailDto(asset);
+    }
+
+    @Override
+    @Transactional
+    public TokenizationResponseDto rejectAsset(Long assetId, RejectAssetRequestDto request) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new AssetNotFoundException("Asset not found with id: " + assetId));
+
+        // Validasi status jika diperlukan (misal: hanya yang PENDING yang bisa di-reject)
+        if (asset.getStatus() != AssetStatus.PENDING) {
+             throw new IllegalStateException("Only PENDING assets can be rejected");
+        }
+        
+        asset.setAuditorNotes(request.getRejectionReason());   
+        asset.setStatus(AssetStatus.REJECTED);
+        
+        // Jika di Entity Asset ada field untuk menyimpan alasan reject, set di sini
+        // asset.setRejectionReason(request.getRejectionReason());
+        
+        log.info("Asset {} rejected. Reason: {}", assetId, request.getRejectionReason());
+
+        Asset savedAsset = assetRepository.save(asset);
+        
+        // Kirim email notifikasi reject jika diperlukan (opsional)
+        // emailService.sendRejectionEmail(savedAsset.getUser().getEmail(), request.getRejectionReason());
+
+        return assetMapper.toDto(savedAsset);
     }
 }
