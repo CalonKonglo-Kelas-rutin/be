@@ -15,17 +15,13 @@ import java.time.LocalDateTime;
 public class User {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private String walletAddress;
     
     @Column(nullable = false, unique = true)
     private String username;
     
     @Column(nullable = false, unique = true)
     private String email;
-    
-    @Column(name = "wallet_address")
-    private String walletAddress;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;

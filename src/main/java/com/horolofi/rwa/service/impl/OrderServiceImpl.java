@@ -44,8 +44,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
         
-        // Ambil User (relasi)
-        User buyer = userRepository.findFirstByWalletAddress(request.getWalletAddress()).orElse(null);
+        // Ambil User (relasi) - Maker
+        User maker = userRepository.findFirstByWalletAddress(request.getWalletAddress()).orElse(null);
         
         // Ambil Asset (relasi)
         Asset asset = assetRepository.findById(request.getAssetId()).orElse(null);
@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Build OrderBook
         OrderBook orderBook = new OrderBook();
-        orderBook.setBuyer(buyer); // Set relasi User
+        orderBook.setMaker_address(maker); // UBAH INI: Ptass object User, bukan String
         orderBook.setAsset(asset); // Set relasi Asset
         orderBook.setOrderType(OrderType.valueOf(request.getOrderType()));// Convert String to OrderType enum
         orderBook.setQuantity(quantityBD.intValue());
@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
         // Return response
         return CreateOrderResponse.builder()
                 .orderId(savedOrder.getId())
-                .walletAddress(buyer.getWalletAddress())
+                .walletAddress(maker.getWalletAddress())
                 .orderType(savedOrder.getOrderType().toString())
                 .assetId(asset.getId())
                 .assetName(asset.getBrand())
@@ -114,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
             OrderBook order = orderPage.getContent().get(i);
             items.add(OrderBookItemDto.builder()
                     .orderId(order.getId())
-                    .userAddress(order.getBuyer().getWalletAddress()) 
+                    .userAddress(order.getMaker_address().getWalletAddress()) 
                     .quantity(order.getQuantity())
                     .createdAt(order.getCreatedAt())
                     .queuePosition(startPosition + i)
@@ -138,8 +138,8 @@ public class OrderServiceImpl implements OrderService {
         OrderBook order = orderBookRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + request.getOrderId()));
 
-        // 2. Validasi Pemilik (Wallet Address harus sama)
-        if (!order.getBuyer().getWalletAddress().equalsIgnoreCase(request.getWalletAddress())) {
+        // 2. Validasi Pemilik (Wallet Address harus sama dengan Maker)
+        if (!order.getMaker_address().getWalletAddress().equalsIgnoreCase(request.getWalletAddress())) {
             throw new RuntimeException("Unauthorized: Wallet address does not match order owner");
         }
 
@@ -157,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
         // 5. Return response (Reuse CreateOrderResponse)
         return CreateOrderResponse.builder()
                 .orderId(savedOrder.getId())
-                .walletAddress(savedOrder.getBuyer().getWalletAddress())
+                .walletAddress(savedOrder.getMaker_address().getWalletAddress())
                 .orderType(savedOrder.getOrderType().toString())
                 .assetId(savedOrder.getAsset().getId())
                 .assetName(savedOrder.getAsset().getBrand())

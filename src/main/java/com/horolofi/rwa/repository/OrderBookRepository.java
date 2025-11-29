@@ -16,7 +16,8 @@ import java.util.List;
 @Repository
 public interface OrderBookRepository extends JpaRepository<OrderBook, Long> { // Changed String to Long
     
-    @Query("SELECT DISTINCT ob.buyer FROM OrderBook ob " +
+    // Ubah ob.buyer menjadi ob.maker_address
+    @Query("SELECT DISTINCT ob.maker_address FROM OrderBook ob " +
            "JOIN ob.asset a " +
            "WHERE a.serialNumber = :serialNumber")
     List<User> findUsersByAssetSerialNumber(@Param("serialNumber") String serialNumber);
