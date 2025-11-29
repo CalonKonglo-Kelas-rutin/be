@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "product_price_history")
+@Table(name = "product_price_history", schema = "public")
 @Data // Lombok: Otomatis bikin Getter, Setter, toString
 public class PriceHistory {
 
