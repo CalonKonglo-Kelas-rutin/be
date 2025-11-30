@@ -8,6 +8,7 @@ import com.horolofi.rwa.dto.CancelOrderRequest; // Import DTO
 import com.horolofi.rwa.dto.MatchOrderResponse;
 import com.horolofi.rwa.entity.OrderStatus;
 import com.horolofi.rwa.entity.OrderType;
+import com.horolofi.rwa.entity.AssetStatus; 
 import com.horolofi.rwa.service.AssetService;
 import com.horolofi.rwa.service.OrderService;
 import jakarta.validation.Valid;
@@ -37,9 +38,12 @@ public class MarketController {
     }
     
     @GetMapping("/listings")
-    public ResponseEntity<List<AssetListingDto>> getListings() {
+    public ResponseEntity<List<AssetListingDto>> getListings(
+        @RequestParam(required = false, defaultValue = "APPROVED") AssetStatus assetStatus
+    ) {
         log.info("Fetching tokenized assets for listings");
-        List<AssetListingDto> listings = assetService.getTokenizedAssets();
+        log.info("Fetching tokenized assets for listings, assetStatus={}", assetStatus);
+        List<AssetListingDto> listings = assetService.getTokenizedAssets(assetStatus);
         return ResponseEntity.ok(listings);
     }
 
@@ -60,11 +64,12 @@ public class MarketController {
     public ResponseEntity<OrderBookListResponse> getUserOrders(
             @RequestParam String walletAddress,
             @RequestParam String assetId,
+            @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) {
-        log.info("Fetching orders for wallet: {}, asset: {}", walletAddress, assetId);
-        OrderBookListResponse response = orderService.getOrdersByUserAndAsset(walletAddress, assetId, null, page, limit);
+        log.info("Fetching orders for wallet: {}, asset: {}, status: {}", walletAddress, assetId, status);
+        OrderBookListResponse response = orderService.getOrdersByUserAndAsset(walletAddress, assetId, status, page, limit);
         return ResponseEntity.ok(response);
     }
     
