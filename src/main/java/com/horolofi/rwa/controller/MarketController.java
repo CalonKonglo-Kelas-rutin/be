@@ -39,7 +39,7 @@ public class MarketController {
     
     @GetMapping("/listings")
     public ResponseEntity<List<AssetListingDto>> getListings(
-        @RequestParam(required = false, defaultValue = "APPROVED") AssetStatus assetStatus
+        @RequestParam(required = false) AssetStatus assetStatus
     ) {
         log.info("Fetching tokenized assets for listings");
         log.info("Fetching tokenized assets for listings, assetStatus={}", assetStatus);
