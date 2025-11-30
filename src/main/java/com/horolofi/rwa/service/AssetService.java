@@ -3,7 +3,8 @@ package com.horolofi.rwa.service;
 
 import com.horolofi.rwa.dto.AssetListingDto;
 import java.util.List;
+import com.horolofi.rwa.entity.AssetStatus;
 
 public interface AssetService {
-    List<AssetListingDto> getTokenizedAssets();
+    List<AssetListingDto> getTokenizedAssets(AssetStatus status);
 }

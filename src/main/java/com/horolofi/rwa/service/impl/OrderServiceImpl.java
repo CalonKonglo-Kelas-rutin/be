@@ -274,6 +274,10 @@ public class OrderServiceImpl implements OrderService {
                         .build())   
                 .toList();
 
+        log.info("Filter: walletAddress={}, assetId={}, status={}", walletAddress, assetId, status);
+        log.info("Result count: {}", orderPage.getContent().size());
+        orderPage.getContent().forEach(o -> log.info("OrderId={}, Status={}", o.getId(), o.getStatus()));
+
         return OrderBookListResponse.builder()
                 .status("success")
                 .meta(OrderBookListResponse.Meta.builder()
